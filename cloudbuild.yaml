@@ -10,8 +10,8 @@ steps:
     - 'bash'
     - '-c'
     - |
-      mkdir kirumba-api/config
-      cp -r kirumba-api/config
+      pwd
+      cp -r kirumba-api/ config
       cd config/openapi_server
       cp ../../app.yaml .
       cp ../../requirements.txt .
