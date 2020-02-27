@@ -1,0 +1,30 @@
+steps:
+  - name: 'gcr.io/cloud-builders/git'
+    args:
+    - 'clone'
+    - '--branch=${BRANCH_NAME}'
+    - 'https://github.com/pmutale/kirumba-api.git'
+  
+  - name: 'ubuntu'
+    args:
+    - 'bash'
+    - '-c'
+    - |
+      cp -r kirumba-api/ config
+      cd config/openapi_server
+      cp ../../app.yaml .
+      cp ../../requirements.txt .
+  
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - 'gcloud app create --region=europe-west || exit 0'
+  
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+    - 'app'
+    - 'deploy'
+    - 'app.yaml'
+    - '--project=${PROJECT_ID}'
+    dir: 'config'
