@@ -28,4 +28,3 @@ steps:
     - 'deploy'
     - 'app.yaml'
     - '--project=${PROJECT_ID}'
-    dir: 'config'
