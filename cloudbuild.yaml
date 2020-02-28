@@ -19,8 +19,8 @@ steps:
       ls -lah ../../
       echo 'Onestep'
       ls -lah ../
-      cp ../../../app.yaml .
-      cp ../../../requirements.txt .
+      cp ../app.yaml .
+      cp ../requirements.txt .
   
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
