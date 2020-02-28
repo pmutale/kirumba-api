@@ -12,8 +12,9 @@ steps:
     - |
       cp -r kirumba-api/apiserver config/
       cd config/openapi_server
-      cp ../../app.yaml .
-      cp ../../requirements.txt .
+      ls -lah
+      cp ../../../app.yaml .
+      cp ../../../requirements.txt .
   
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
