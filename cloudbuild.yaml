@@ -11,8 +11,8 @@ steps:
     - '-c'
     - |
       pwd
-      cp -r kirumba-api/ workspace/
-      cd workspace/apiserver/openapi_server
+      cp -r kirumba-api/apiserver/ /
+      cd openapi_server
       cp ../../app.yaml .
       cp ../../requirements.txt .
   
