@@ -10,10 +10,8 @@ steps:
     - 'bash'
     - '-c'
     - |
-      pwd
-      ls -lah
-      cp -r kirumba-api/apiserver/ /
-      cd openapi_server
+      cp -r kirumba-api/apiserver config/
+      cd config/openapi_server
       cp ../../app.yaml .
       cp ../../requirements.txt .
   
@@ -29,3 +27,4 @@ steps:
     - 'deploy'
     - 'app.yaml'
     - '--project=${PROJECT_ID}'
+    dir: 'config'
