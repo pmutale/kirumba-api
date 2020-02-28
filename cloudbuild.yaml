@@ -10,9 +10,15 @@ steps:
     - 'bash'
     - '-c'
     - |
-      cp -r kirumba-api/apiserver config/
-      cd config/openapi_server
       ls -lah
+      cp -r kirumba-api/apiserver/openapi_server config/
+      cd config/
+      echo 'Two Steps'
+      ls ../../../
+      echo 'Three Steps'
+      ls ../../
+      echo 'Onestep'
+      ls ../
       cp ../../../app.yaml .
       cp ../../../requirements.txt .
   
