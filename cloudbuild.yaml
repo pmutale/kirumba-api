@@ -11,6 +11,7 @@ steps:
     - '-c'
     - |
       pwd
+      ls -lah
       cp -r kirumba-api/apiserver/ /
       cd openapi_server
       cp ../../app.yaml .
