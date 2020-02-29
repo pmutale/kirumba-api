@@ -4,8 +4,8 @@ info:
   version: '0.1'
   description: An API to avail requests and saving of data for Kirumba
   contact:
-    name: Shorten URL
-    url: 'http://shorten-url.appspot.com'
+    name: Kirumba
+    url: 'http://kirumba-app-dev.appspot.com'
     email: peter@mutale.nl
   license:
     name: GNU GPLv3
@@ -22,64 +22,38 @@ servers:
           - api.dev
           
 paths:
-  /chicken:
+  /farms:
     post:
       tags:
-        - chicken
-      summary: Add a new chicken to the store
-      operationId: addPet
+        - Farm
+      summary: Add a new farm
+      operationId: add_farm
+      description: Adds a new lot to the farm
       responses:
+        '200':
+          description: Success 200 OK
         '405':
-          description: Invalid input
+          description: Invalid Input
       security:
-        - petstore_auth:
-            - 'write:pets'
-            - 'read:pets'
+        - farm_auth:
+            - 'email'
+            - 'profile'
       requestBody:
-        $ref: '#/components/requestBodies/Pet'
-      x-openapi-router-controller: openapi_server.controllers.shorten_url_controllers
-    put:
-      tags:
-        - chicken
-      summary: Update an existing chicken
-      operationId: updatePet
-      x-openapi-router-controller: openapi_server.controllers.shorten_url_controllers
-      responses:
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Pet not found
-        '405':
-          description: Validation exception
-      security:
-        - petstore_auth:
-            - 'write:pets'
-            - 'read:pets'
-      requestBody:
-        $ref: '#/components/requestBodies/Pet'
-  /eggs:
+        $ref: '#/components/requestBodies/Farm'
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
     get:
       tags:
-        - eggs
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
+        - Farm
+      summary: Retrieve a farm
+      description: A farm details
+      operationId: get_farm
       parameters:
-        - name: status
+        - name: id
           in: query
-          description: Status values that need to be considered for filter
           required: true
-          explode: true
           schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - available
-                - pending
-                - sold
-              default: available
-      x-openapi-router-controller: openapi_server.controllers.shorten_url_controllers
+            type: integer
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
       responses:
         '200':
           description: successful operation
@@ -88,51 +62,177 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid status value
+      security:
+        - farm_auth:
+            - 'email'
+            - 'profile'
+    delete:
+      tags:
+        - Farm
+      summary: Delete a farm
+      description: A farm details
+      operationId: delete_farm
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid status value
+      security:
+        - farm_auth:
+            - 'email'
+            - 'profile'
+  /poultry:
+    post:
+      tags:
+        - Poultry
+      summary: Add a new poultry lot to the farm
+      operationId: add_new_lot
+      description: Adds a new lot to the farm
+      responses:
+        '405':
+          description: Invalid Input
+      security:
+        - farm_auth:
+            - 'email'
+            - 'profile'
+      requestBody:
+        $ref: '#/components/requestBodies/Poultry'
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+    get:
+      tags:
+        - Poultry
+      summary: Retrieve a specific lot in farm
+      operationId: get_lot
+      parameters:
+        - name: lot_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Poultry'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Farm not found
+        '405':
+          description: Validation exception
+      security:
+        - farm_auth:
+            - 'write:pets'
+            - 'read:pets'
+  /eggs:
+    get:
+      tags:
+        - Eggs
+      summary: Finds Egg collection routine by date
+      description: A date values can be provided with comma separated strings
+      operationId: get_egg
+      parameters:
+        - name: date
+          in: query
+          description: Date values that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            type: string
+            items:
+              type: string
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farm'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Farm'
         '400':
           description: Invalid status value
       security:
-        - petstore_auth:
+        - farm_auth:
             - 'write:pets'
             - 'read:pets'
-
-externalDocs:
-  description: Find out more about Swagger
-  url: 'http://swagger.io'
+    post:
+      tags:
+        - Eggs
+      summary: Add a new egg pick or collection routine
+      operationId: record_pick_routine
+      description: A record of a routine egg collection
+      responses:
+        '200':
+          description: 200 OK
+        '405':
+          description: Invalid Input
+        '500':
+          description: Internal Error Occured
+      security:
+        - farm_auth:
+            - 'email'
+            - 'profile'
+      requestBody:
+        $ref: '#/components/requestBodies/Eggs'
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+    patch:
+      tags:
+        - Eggs
+      summary: Edit or Change fields on a collection routine
+      description: Edit a routine
+      operationId: edit_routine
+      parameters:
+        - name: date
+          in: query
+          required: true
+          explode: true
+          schema:
+            type: string
+            items:
+              type: string
+      responses:
+        '200':
+          description: 200 OK
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
 components:
   schemas:
-    Order:
+    Coordinate:
       type: object
       properties:
-        id:
+        lat:
           type: integer
-          format: int64
-        petId:
+          format: float
+        lon:
           type: integer
-          format: int64
-        quantity:
-          type: integer
-          format: int32
-        shipDate:
-          type: string
-          format: date-time
-        status:
-          type: string
-          description: Order Status
-          enum:
-            - placed
-            - approved
-            - delivered
-        complete:
-          type: boolean
-          default: false
-      xml:
-        name: Order
+          format: float
     Category:
       type: object
       properties:
@@ -141,8 +241,6 @@ components:
           format: int64
         name:
           type: string
-      xml:
-        name: Category
     User:
       type: object
       properties:
@@ -165,8 +263,6 @@ components:
           type: integer
           format: int32
           description: User Status
-      xml:
-        name: User
     Tag:
       type: object
       properties:
@@ -175,13 +271,11 @@ components:
           format: int64
         name:
           type: string
-      xml:
-        name: Tag
-    Pet:
+    Farm:
       type: object
       required:
         - name
-        - photoUrls
+        - location
       properties:
         id:
           type: integer
@@ -190,70 +284,95 @@ components:
           $ref: '#/components/schemas/Category'
         name:
           type: string
-          example: doggie
-        photoUrls:
-          type: array
-          xml:
-            name: photoUrl
-            wrapped: true
+          example: 'Hacienda Kirumba'
+        location:
+          type: object
           items:
-            type: string
+            $ref: '#/components/schemas/Coordinate'
+          example:
+            - { lat: 23.45945, lon: -34.25435 }
         tags:
           type: array
-          xml:
-            name: tag
-            wrapped: true
           items:
             $ref: '#/components/schemas/Tag'
-        status:
-          type: string
-          description: chicken status in the store
-          enum:
-            - available
-            - pending
-            - sold
-      xml:
-        name: Pet
-    ApiResponse:
+    Eggs:
       type: object
+      required:
+        - datetimestamp
+        - user
+        - number_of_eggs
       properties:
-        code:
+        number_of_broken_eggs:
           type: integer
-          format: int32
+          example: 2
+        number_of_eggs:
+          type: integer
+          example: 56
+        datetimestamp:
+          type: string
+        user:
+          items:
+            $ref: '#/components/schemas/User'
+    Type:
+      type: object
+      required:
+        - type
+      properties:
         type:
           type: string
-        message:
+          example: 'Layers'
+    Poultry:
+      type: object
+      required:
+        - lot_id
+        - invested_capital
+        - amount_of_lot
+        - date_of_purchase
+      properties:
+        lot_id:
+          type: integer
+          example: 200000
+        invested_capital:
+          type: integer
+          example: 200000
+        amount_of_lot:
+          type: integer
+          example: 5000
+        date_of_purchase:
           type: string
+        type:
+          items:
+            $ref: '#/components/schemas/Type'
   requestBodies:
-    Pet:
+    Poultry:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Pet'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/Pet'
-      description: Pet object that needs to be added to the store
+            $ref: '#/components/schemas/Poultry'
+      description: Farm object that needs to be added to the store
       required: true
-    UserArray:
+    Eggs:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
-      description: List of user object
+            $ref: '#/components/schemas/Eggs'
+      description: Farm object that needs to be added to the store
+      required: true
+    Farm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Farm'
+      description: Farm object that needs to be added to the store
       required: true
   securitySchemes:
-    petstore_auth:
+    farm_auth:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: 'http://petstore.swagger.io/oauth/dialog'
+          authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
           scopes:
-            'write:pets': modify pets in your account
-            'read:pets': read your pets
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
+            'email': modify farm in your account
+            'profile': read your farm attributes
+      x-tokenInfoUrl: 'https://oauth2.googleapis.com/token'
+      x-scopeValidateFunc: connexion.decorators.security.validate_scope

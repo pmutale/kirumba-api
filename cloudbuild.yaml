@@ -10,7 +10,6 @@ steps:
     - 'bash'
     - '-c'
     - |
-      ls -lah
       cp -r kirumba-api/apiserver/ config/
       cd config/
       cp ../app.yaml .
