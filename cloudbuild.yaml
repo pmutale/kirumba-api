@@ -13,6 +13,7 @@ steps:
       cp -r kirumba-api/apiserver/ config/
       cd config/
       cp ../app.yaml .
+      cp ../dispatch.yaml .
       cp ../requirements.txt .
   
   - name: 'gcr.io/cloud-builders/gcloud'
