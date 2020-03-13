@@ -2,5 +2,5 @@ dispatch:
   - url: "*/*"
     service: frontend
 
-  - url: "*/api*"
+  - url: "*/app*"
     service: default
