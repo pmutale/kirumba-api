@@ -13,13 +13,13 @@ info:
   x-audience: company-internal
   x-api-id: 1b66bb9e-5b02-49f1-8cf9-bc3f649d70a6
 servers:
-  - url: /{environment}/v1
+  - url: /{version}
     variables:
-      environment:
-        default: api
+      version:
+        default: v1
         enum:
-          - api
-          - api.dev
+          - v1
+          - dev.v1
           
 paths:
   /farms:
