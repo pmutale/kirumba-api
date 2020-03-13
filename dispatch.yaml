@@ -1,6 +1,6 @@
 dispatch:
-  - url: "*/*"
+  - url: "*/"
     service: frontend
 
-  - url: "app.kirumba.org/*"
+  - url: "*/api*"
     service: default
