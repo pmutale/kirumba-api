@@ -27,5 +27,6 @@ steps:
     - 'app'
     - 'deploy'
     - 'app.yaml'
+    - 'dispatch.yaml'
     - '--project=${PROJECT_ID}'
     dir: 'config'
