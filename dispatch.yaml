@@ -2,5 +2,5 @@ dispatch:
   - url: "*/*"
     service: frontend
 
-  - url: "*/app*"
+  - url: "app.kirumba.org/*"
     service: default
