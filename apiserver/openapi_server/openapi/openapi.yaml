@@ -35,9 +35,10 @@ paths:
         '405':
           description: Invalid Input
       security:
-        - farm_auth:
+        - jwt:
             - 'email'
             - 'profile'
+            - 'openid'
       requestBody:
         $ref: '#/components/requestBodies/Farm'
       x-openapi-router-controller: openapi_server.controllers.farm_controllers
@@ -66,7 +67,7 @@ paths:
         '400':
           description: Invalid status value
       security:
-        - farm_auth:
+        - jwt:
             - 'email'
             - 'profile'
     delete:
@@ -94,7 +95,7 @@ paths:
         '400':
           description: Invalid status value
       security:
-        - farm_auth:
+        - jwt:
             - 'email'
             - 'profile'
   /poultry:
@@ -108,7 +109,7 @@ paths:
         '405':
           description: Invalid Input
       security:
-        - farm_auth:
+        - jwt:
             - 'email'
             - 'profile'
       requestBody:
@@ -142,7 +143,7 @@ paths:
         '405':
           description: Validation exception
       security:
-        - farm_auth:
+        - jwt:
             - 'write:pets'
             - 'read:pets'
   /eggs:
@@ -180,7 +181,7 @@ paths:
         '400':
           description: Invalid status value
       security:
-        - farm_auth:
+        - jwt:
             - 'write:pets'
             - 'read:pets'
     post:
@@ -197,7 +198,7 @@ paths:
         '500':
           description: Internal Error Occured
       security:
-        - farm_auth:
+        - jwt:
             - 'email'
             - 'profile'
       requestBody:
@@ -222,6 +223,43 @@ paths:
         '200':
           description: 200 OK
       x-openapi-router-controller: openapi_server.controllers.farm_controllers
+  /auth/{user_id}:
+    get:
+      tags:
+        - JWT
+      summary: Return JWT token
+      operationId: generate_token
+      parameters:
+        - name: user_id
+          description: User unique identifier
+          in: path
+          required: true
+          example: 12
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: JWT token
+          content:
+            'text/plain':
+              schema:
+                type: string
+      x-openapi-router-controller: openapi_server.auth.controllers
+#  /auth/secret:
+#      get:
+#        summary: Return secret string
+#        operationId: get_secret
+#        responses:
+#          '200':
+#            description: secret response
+#            content:
+#              'text/plain':
+#                schema:
+#                  type: string
+#            x-openapi-router-controller: openapi_server.auth.controllers
+#        security:
+#          - jwt: ['secret']
+
 components:
   schemas:
     Coordinate:
@@ -277,9 +315,6 @@ components:
         - name
         - location
       properties:
-        id:
-          type: integer
-          format: int64
         category:
           $ref: '#/components/schemas/Category'
         name:
@@ -289,8 +324,7 @@ components:
           type: object
           items:
             $ref: '#/components/schemas/Coordinate'
-          example:
-            - { lat: 23.45945, lon: -34.25435 }
+          example: { lat: 23.45945, lon: -34.25435 }
         tags:
           type: array
           items:
@@ -366,13 +400,26 @@ components:
       description: Farm object that needs to be added to the store
       required: true
   securitySchemes:
+    api_key_auth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      x-apikeyInfoFunc: openapi_server.auth.validate_api_keys
+
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: openapi_server.auth.controllers.decode_token
     farm_auth:
       type: oauth2
       flows:
-        implicit:
+        authorizationCode:
           authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
+          tokenUrl: 'https://oauth2.googleapis.com/token'
           scopes:
-            'email': modify farm in your account
-            'profile': read your farm attributes
-      x-tokenInfoUrl: 'https://oauth2.googleapis.com/token'
-      x-scopeValidateFunc: connexion.decorators.security.validate_scope
+            'email': 'modify farm in your account'
+            'profile': 'read your farm attributes'
+            'openid': 'profile'
+      x-scopeValidateFunc: openapi_server.auth.validate_scope
+      x-tokenInfoFunc: openapi_server.auth.validate_token_info

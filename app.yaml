@@ -5,3 +5,16 @@ handlers:
     script: auto
     secure: always
     redirect_http_response_code: 301
+
+
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+- ^lib/setuptools/script \(dev\).tmpl$
+
+#- url: /v1/ui/.*
+#  script: openapi_server.auth.redirect_credentials
+#  secure: always

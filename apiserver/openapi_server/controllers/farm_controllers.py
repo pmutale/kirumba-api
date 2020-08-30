@@ -5,17 +5,20 @@ from datetime import datetime
 import connexion
 from flask import make_response, jsonify, redirect
 
-from google.cloud import datastore
-
-from openapi_server.models.coordinate import Coordinate
+from datalore.collections import Collections
+from openapi_server.models import coordinate, farm
 
 
 def add_farm():
-    pass
+    request = connexion.request
+    if request.is_json:
+        return Collections().add_data(request.get_json(), 'farm')
 
 
 def add_new_lot():
-    pass
+    request = connexion.request
+    if request.is_json:
+        return Collections().add_data(request.get_json(), 'lot')
 
 
 def get_farm():
