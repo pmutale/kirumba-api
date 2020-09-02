@@ -44,4 +44,23 @@ $ docker build -t openapi_server .
 
 # starting up a container
 $ docker run -p 8080:8080 openapi_server
+
+# Using the make file [builds and runs the docker instance]
+$ make build && make run
+```
+
+## Creating an `.env` file
+
+If you intend to use the API, you will definately need to create an environmental variables file before you 
+run the instance
+Please include the following environment keys
+
+```dotenv
+GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/service_accounts/service-account-example.json  # Replace
+GAE_ENV=default
+GAE_SERVICE=gae
+JWT_ISSUER=issuer_name@example.gserviceaccount.com  # Replace with isuer
+JWT_SECRET=secret12key # Replace with secret
+JWT_LIFETIME_SECONDS=600
+PROJECT_ID=kirumba-app-dev 
 ```

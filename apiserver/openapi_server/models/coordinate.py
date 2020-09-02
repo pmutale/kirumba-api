@@ -2,7 +2,6 @@
 
 from __future__ import absolute_import
 
-from datalore.client import FirestoreClient, DataAlreadyExistsException
 from openapi_server.models.base_model_ import Model
 from openapi_server import util
 

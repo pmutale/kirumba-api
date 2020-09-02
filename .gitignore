@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 .idea/
 !/database-debug.log
+service_accounts/

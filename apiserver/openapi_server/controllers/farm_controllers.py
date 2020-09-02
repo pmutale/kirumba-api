@@ -5,7 +5,7 @@ from datetime import datetime
 import connexion
 from flask import make_response, jsonify, redirect
 
-from datalore.collections import Collections
+from openapi_server.datalore.collections import Collections
 from openapi_server.models import coordinate, farm
 
 

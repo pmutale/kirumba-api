@@ -1,1 +1,1 @@
-from models import *
+from openapi_server.models import *

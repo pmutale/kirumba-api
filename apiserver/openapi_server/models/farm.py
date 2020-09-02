@@ -1,29 +1,5 @@
-# {
-#   "category": {
-#     "id": 0,
-#     "name": "string"
-#   },
-#   "id": 0,
-#   "location": [
-#     {
-#       "lat": 23.45945,
-#       "lon": -34.25435
-#     }
-#   ],
-#   "name": "Hacienda Kirumba",
-#   "tags": [
-#     {
-#       "id": 0,
-#       "name": "string"
-#     }
-#   ]
-# }
-
-# coding: utf-8
-
 from __future__ import absolute_import
 
-from datalore.client import FirestoreClient, DataAlreadyExistsException
 from openapi_server.models.base_model_ import Model
 from openapi_server import util
 
