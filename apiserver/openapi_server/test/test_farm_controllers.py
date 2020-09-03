@@ -1,9 +1,7 @@
 import json
+from unittest.mock import patch, MagicMock
 
 from openapi_server.test import BaseTestCase
-
-URL = "https://www.google.com"
-SHORT_CODE = "gooL1_"
 
 
 class CustomAssertMethods(BaseTestCase):
@@ -19,12 +17,20 @@ class CustomAssertMethods(BaseTestCase):
 class TestDefaultController(BaseTestCase):
     """DefaultController integration test stubs"""
 
-    def test_shorten_url(self):
+    @patch('openapi_server.datalore.client.FirestoreClient.get_client')
+    @patch('connexion.decorators.security.get_authorization_info')
+    def test_add_farm(self, get_authorization_info_mock, get_client):
         """Test case for shortening a url"""
+
         headers = {"Content-Type": "application/json"}
-        data = {"url": URL, "short_code": SHORT_CODE}
+        data = {
+            "category": {"id": 0, "name": "string"},
+            "location": {"lat": 23.45945, "lon": -34.25435},
+            "name": "Hacienda Kirumba",
+            "tags": [{"id": 0, "name": "string"}]
+        }
         response = self.client.open(
-            "/v1/shorten",
+            "/v1/farms",
             method="POST",
             headers=headers,
             data=json.dumps(data),
@@ -47,14 +53,3 @@ class TestDefaultController(BaseTestCase):
             self.assert200(
                 response, f'Response body is : {response.data.decode("utf-8")}'
             )
-
-    def test_redirect(self):
-        url = "https://www.google.com"
-        short_code = SHORT_CODE
-        response = self.client.get(f"/v1/{short_code}")
-        self.assert_redirects(response, url)
-
-    def test_url_data(self):
-        short_code = SHORT_CODE
-        response = self.client.open(f"/v1/{short_code}/stats")
-        self.assert200(response)
