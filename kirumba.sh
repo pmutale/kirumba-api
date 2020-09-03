@@ -37,8 +37,8 @@ while [ $opt != '' ]
       case $opt in
         1) clear;
             option_picked "Option 1 Picked";
-            gcloud beta emulators firestore start --project tryout-dev --host-port "localhost:8001"
-            firebase emulators:start --only firestore
+#            gcloud beta emulators firestore start --project tryout-dev --host-port "localhost:8001"
+            firebase emulators:start
             show_menu;
         ;;
         2) clear;
