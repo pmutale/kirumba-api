@@ -14,4 +14,4 @@ app.add_api('openapi.yaml',
             arguments={'title': 'API: Kirumba'},
             pythonic_params=True)
 app.app.json_encoder = url_encoder.JSONEncoder
-CORS(app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
+CORS(app.app, resources={r"/*": {"origins": "*", "send_wildcard": "False"}})
