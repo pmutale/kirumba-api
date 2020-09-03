@@ -8,22 +8,23 @@ from openapi_server.datalore.client import DataAlreadyExistsException, Firestore
 logger = logging.getLogger(__name__)
 
 
-class Confg:
+class Config:
     def __init__(self, env):
         self.env = env
 
 
 class Collections:
-    config = Confg(env=os.environ.get('GAE_ENV'))
+    config = Config(env=os.environ.get('GAE_ENV'))
 
     @track_start_en_stop
     def add_data(self, data, resource):
-        data_id = data['name'].split(' ').join('_')
+        data_id = '_'.join(data['name'].split(' ')).lower()
         reference = FirestoreClient(self.config).get_client().collection(resource).document(data_id)
         if reference.get().exists:
             raise DataAlreadyExistsException('Already exists')
         try:
             adding = reference.create(data)
+            logger.info(adding)
             return f'{reference.id}', 200
         except Exception as err:
             logger.error(str(err), exc_info=True)
