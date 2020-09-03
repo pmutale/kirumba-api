@@ -1,0 +1,425 @@
+openapi: 3.0.2
+info:
+  title: Kirumba API
+  version: '0.1'
+  description: An API to avail requests and saving of data for Kirumba
+  contact:
+    name: Kirumba
+    url: 'http://kirumba-app-dev.appspot.com'
+    email: peter@mutale.nl
+  license:
+    name: GNU GPLv3
+    url: 'https://www.gnu.org/licenses/gpl.txt'
+  x-audience: company-internal
+  x-api-id: 1b66bb9e-5b02-49f1-8cf9-bc3f649d70a6
+servers:
+  - url: /{version}
+    variables:
+      version:
+        default: v1
+        enum:
+          - v1
+          - dev.v1
+          
+paths:
+  /farms:
+    post:
+      tags:
+        - Farm
+      summary: Add a new farm
+      operationId: add_farm
+      description: Adds a new lot to the farm
+      responses:
+        '200':
+          description: Success 200 OK
+        '405':
+          description: Invalid Input
+      security:
+        - jwt:
+            - 'email'
+            - 'profile'
+            - 'openid'
+      requestBody:
+        $ref: '#/components/requestBodies/Farm'
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+    get:
+      tags:
+        - Farm
+      summary: Retrieve a farm
+      description: A farm details
+      operationId: get_farm
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid status value
+      security:
+        - jwt:
+            - 'email'
+            - 'profile'
+    delete:
+      tags:
+        - Farm
+      summary: Delete a farm
+      description: A farm details
+      operationId: delete_farm
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid status value
+      security:
+        - jwt:
+            - 'email'
+            - 'profile'
+  /poultry:
+    post:
+      tags:
+        - Poultry
+      summary: Add a new poultry lot to the farm
+      operationId: add_new_lot
+      description: Adds a new lot to the farm
+      responses:
+        '405':
+          description: Invalid Input
+      security:
+        - jwt:
+            - 'email'
+            - 'profile'
+      requestBody:
+        $ref: '#/components/requestBodies/Poultry'
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+    get:
+      tags:
+        - Poultry
+      summary: Retrieve a specific lot in farm
+      operationId: get_lot
+      parameters:
+        - name: lot_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Poultry'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Farm not found
+        '405':
+          description: Validation exception
+      security:
+        - jwt:
+            - 'write:pets'
+            - 'read:pets'
+  /eggs:
+    get:
+      tags:
+        - Eggs
+      summary: Finds Egg collection routine by date
+      description: A date values can be provided with comma separated strings
+      operationId: get_egg
+      parameters:
+        - name: date
+          in: query
+          description: Date values that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            type: string
+            items:
+              type: string
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farm'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid status value
+      security:
+        - jwt:
+            - 'write:pets'
+            - 'read:pets'
+    post:
+      tags:
+        - Eggs
+      summary: Add a new egg pick or collection routine
+      operationId: record_pick_routine
+      description: A record of a routine egg collection
+      responses:
+        '200':
+          description: 200 OK
+        '405':
+          description: Invalid Input
+        '500':
+          description: Internal Error Occured
+      security:
+        - jwt:
+            - 'email'
+            - 'profile'
+      requestBody:
+        $ref: '#/components/requestBodies/Eggs'
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+    patch:
+      tags:
+        - Eggs
+      summary: Edit or Change fields on a collection routine
+      description: Edit a routine
+      operationId: edit_routine
+      parameters:
+        - name: date
+          in: query
+          required: true
+          explode: true
+          schema:
+            type: string
+            items:
+              type: string
+      responses:
+        '200':
+          description: 200 OK
+      x-openapi-router-controller: openapi_server.controllers.farm_controllers
+  /auth/{user_id}:
+    get:
+      tags:
+        - JWT
+      summary: Return JWT token
+      operationId: generate_token
+      parameters:
+        - name: user_id
+          description: User unique identifier
+          in: path
+          required: true
+          example: 12
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: JWT token
+          content:
+            'text/plain':
+              schema:
+                type: string
+      x-openapi-router-controller: openapi_server.auth.controllers
+#  /auth/secret:
+#      get:
+#        summary: Return secret string
+#        operationId: get_secret
+#        responses:
+#          '200':
+#            description: secret response
+#            content:
+#              'text/plain':
+#                schema:
+#                  type: string
+#            x-openapi-router-controller: openapi_server.auth.controllers
+#        security:
+#          - jwt: ['secret']
+
+components:
+  schemas:
+    Coordinate:
+      type: object
+      properties:
+        lat:
+          type: integer
+          format: float
+        lon:
+          type: integer
+          format: float
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        userStatus:
+          type: integer
+          format: int32
+          description: User Status
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Farm:
+      type: object
+      required:
+        - name
+        - location
+      properties:
+        category:
+          $ref: '#/components/schemas/Category'
+        name:
+          type: string
+          example: 'Hacienda Kirumba'
+        location:
+          type: object
+          items:
+            $ref: '#/components/schemas/Coordinate'
+          example: { lat: 23.45945, lon: -34.25435 }
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    Eggs:
+      type: object
+      required:
+        - datetimestamp
+        - user
+        - number_of_eggs
+      properties:
+        number_of_broken_eggs:
+          type: integer
+          example: 2
+        number_of_eggs:
+          type: integer
+          example: 56
+        datetimestamp:
+          type: string
+        user:
+          items:
+            $ref: '#/components/schemas/User'
+    Type:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          example: 'Layers'
+    Poultry:
+      type: object
+      required:
+        - lot_id
+        - invested_capital
+        - amount_of_lot
+        - date_of_purchase
+      properties:
+        lot_id:
+          type: integer
+          example: 200000
+        invested_capital:
+          type: integer
+          example: 200000
+        amount_of_lot:
+          type: integer
+          example: 5000
+        date_of_purchase:
+          type: string
+        type:
+          items:
+            $ref: '#/components/schemas/Type'
+  requestBodies:
+    Poultry:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Poultry'
+      description: Farm object that needs to be added to the store
+      required: true
+    Eggs:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Eggs'
+      description: Farm object that needs to be added to the store
+      required: true
+    Farm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Farm'
+      description: Farm object that needs to be added to the store
+      required: true
+  securitySchemes:
+    api_key_auth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      x-apikeyInfoFunc: openapi_server.auth.validate_api_keys
+
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: openapi_server.auth.controllers.decode_token
+    farm_auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
+          tokenUrl: 'https://oauth2.googleapis.com/token'
+          scopes:
+            'email': 'modify farm in your account'
+            'profile': 'read your farm attributes'
+            'openid': 'profile'
+      x-scopeValidateFunc: openapi_server.auth.validate_scope
+      x-tokenInfoFunc: openapi_server.auth.validate_token_info

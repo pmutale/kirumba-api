@@ -1,0 +1,7 @@
+dispatch:
+  - url: "api.kirumba.org/*"
+    service: default
+
+  - url: "kirumba.org/*"
+    service: frontend
+
