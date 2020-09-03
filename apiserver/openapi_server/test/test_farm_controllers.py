@@ -4,10 +4,6 @@ from unittest.mock import patch, MagicMock
 from openapi_server.test import BaseTestCase
 
 
-# URL = "https://www.google.com"
-# SHORT_CODE = "gooL1_"
-
-
 class CustomAssertMethods(BaseTestCase):
     def assert409(self, response, message):
         """ Already in use"""
