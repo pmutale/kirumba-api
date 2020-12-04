@@ -23,3 +23,8 @@ google-cloud-tasks==2.0.0
 google-cloud-pubsub==1.7.0
 python-jose[cryptography]
 Werkzeug==0.16.1
+
+# Testing
+#--------------------------
+coverage==-5.3
+pytest==6.1.2
