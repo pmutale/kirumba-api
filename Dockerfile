@@ -1,4 +1,4 @@
-FROM python:3-alpine AS base
+FROM python:3.11.0a2-alpine AS base
 # g++ => grpcio, rest are for other python and google related packages
 RUN apk update && apk add gcc libc-dev make git libffi-dev openssl-dev python3-dev libxml2-dev libxslt-dev g++
 
