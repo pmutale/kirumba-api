@@ -22,4 +22,5 @@ google-cloud-storage==1.31.0
 google-cloud-tasks==2.0.0
 google-cloud-pubsub==1.7.0
 python-jose[cryptography]
-Werkzeug==0.16.1
+Werkzeug==3.1.5
+urllib3>=2.6.3 # not directly required, pinned by Snyk to avoid a vulnerability
